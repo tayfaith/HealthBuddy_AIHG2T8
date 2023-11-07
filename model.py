@@ -1,5 +1,4 @@
 import os
-import numpy as np
 from dotenv import load_dotenv
 from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.memory import ConversationBufferMemory
@@ -9,7 +8,6 @@ from langchain.vectorstores import Chroma
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import ConversationalRetrievalChain
-from langchain.chains import LLMChain
 from langchain.chains.question_answering import load_qa_chain
 from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_PROMPT
 from langchain.retrievers.multi_query import MultiQueryRetriever
@@ -74,22 +72,19 @@ def getResponse(question: str) -> str:
     )
 
     your_prompt = PromptTemplate.from_template(template)
-    doc_chain = load_qa_chain(llm, chain_type="stuff")
-    question_generator = LLMChain(llm=llm, prompt=your_prompt)
 
-    # Execute chain
-    chain = ConversationalRetrievalChain(
-        question_generator=question_generator,
+     # Execute chain
+    qa = ConversationalRetrievalChain.from_llm(
+        llm,
+        combine_docs_chain_kwargs={"prompt": your_prompt},
         retriever=retriever_from_llm,
         return_source_documents=True,
         return_generated_question=True,
-        memory=memory,
-        combine_docs_chain=doc_chain
+        memory=memory
     )
 
-    chat_history = []
     # Evaluate your chatbot with questions
-    result = chain({"question": question, "chat_history": chat_history})
+    result = qa({"question": question})
 
     print(result)
     return result['answer']
