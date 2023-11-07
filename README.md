@@ -1,6 +1,6 @@
 ### 1. Creating the environment variables
 
-On the `aihbot` directory, create a `.env` file. Open the file to do the following:
+On the `HealthBuddy` directory, create a `.env` file. Open the file to do the following:
 
 ```
 OPENAI_API_KEY=sk-YOUR_OPENAI_APIKEY
