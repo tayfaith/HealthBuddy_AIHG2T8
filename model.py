@@ -24,7 +24,7 @@ def getResponse(question: str) -> str:
     pages = loader.load()
 
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=2000,
+        chunk_size=1000,
         chunk_overlap=150,
         length_function=len
     )
